@@ -72,6 +72,13 @@ services:
       <<: *deploy-replicated
       labels:
         <<: *deploy-labels
+        - "traefik.http.routers.grafana.rule=Host(`grafana.example.com`)"
+        #- traefik.http.routers.grafana.middlewares=oauth01
+        - traefik.http.routers.grafana.entrypoints=prodhttps
+        - traefik.http.routers.grafana.service=prom
+        - traefik.http.services.grafana.loadbalancer.server.port=3000
+        #- traefik.http.routers.grafana.tls=true
+        #- traefik.http.routers.grafana.tls.certresolver=letsencrypt
 
 
   alertmanager:
@@ -92,7 +99,13 @@ services:
       <<: *deploy-replicated
       labels:
         <<: *deploy-labels
-
+        - "traefik.http.routers.alertmanager.rule=Host(`alertmanager.example.com`)"
+        #- traefik.http.routers.alertmanager.middlewares=oauth01
+        - traefik.http.routers.alertmanager.entrypoints=prodhttps
+        - traefik.http.routers.alertmanager.service=prom
+        - traefik.http.services.alertmanager.loadbalancer.server.port=9093
+        #- traefik.http.routers.alertmanager.tls=true
+        #- traefik.http.routers.alertmanager.tls.certresolver=letsencrypt
 
   unsee:
     image: cloudflare/unsee:v0.8.0
@@ -105,7 +118,13 @@ services:
       <<: *deploy-replicated
       labels:
         <<: *deploy-labels
-
+        - "traefik.http.routers.unsee.rule=Host(`unsee.example.com`)"
+        #- traefik.http.routers.unsee.middlewares=oauth01
+        - traefik.http.routers.unsee.entrypoints=prodhttps
+        - traefik.http.routers.unsee.service=prom
+        - traefik.http.services.unsee.loadbalancer.server.port=8080
+        #- traefik.http.routers.unsee.tls=true
+        #- traefik.http.routers.unsee.tls.certresolver=letsencrypt
 
   node-exporter:
     image: dhileepbalaji/node-exporter:latest
@@ -166,4 +185,11 @@ services:
       <<: *deploy-replicated
       labels:
         <<: *deploy-labels
+        - "traefik.http.routers.prom.rule=Host(`prometheus.example.com`)"
+        - traefik.http.routers.prom.entrypoints=prodhttps
+        #- traefik.http.routers.prom.middlewares=oauth01
+        - traefik.http.routers.prom.service=prom
+        - traefik.http.services.prom.loadbalancer.server.port=9090
+        #- traefik.http.routers.prom.tls=true
+        #- traefik.http.routers.unsee.tls.certresolver=letsencrypt
 
