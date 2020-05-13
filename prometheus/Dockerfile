@@ -1,7 +1,5 @@
-FROM prom/prometheus:v2.5.0
+FROM prom/prometheus:latest
 # https://hub.docker.com/r/prom/prometheus/tags/
-
-ENV WEAVE_TOKEN=none
 
 COPY conf /etc/prometheus/
 

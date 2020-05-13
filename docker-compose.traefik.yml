@@ -1,10 +1,9 @@
-version: "3.3"
+version: "3.7"
 
 networks:
-  net:
+  default:
     driver: overlay
-    attachable: true
-  traefik-public:
+  traefik:
     external: true
 
 volumes:
@@ -13,35 +12,20 @@ volumes:
     alertmanager: {}
 
 configs:
-  dockerd_config:
-    file: ./dockerd-exporter/Caddyfile
   node_rules:
     file: ./prometheus/rules/swarm_node.rules.yml
   task_rules:
     file: ./prometheus/rules/swarm_task.rules.yml
+  websites_rules:
+    file: ./prometheus/rules/websites.yml
+  sites_rules:
+    file: ./prometheus/rules/sites.yml
 
 services:
-  dockerd-exporter:
-    image: stefanprodan/caddy
-    networks:
-      - net
-    environment:
-      - DOCKER_GWBRIDGE_IP=172.18.0.1
-    configs:
-      - source: dockerd_config
-        target: /etc/caddy/Caddyfile
-    deploy:
-      mode: global
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
-
   cadvisor:
-    image: google/cadvisor
+    image: google/cadvisor:latest
     networks:
-      - net
+      - default
     command: -logtostderr -docker_only
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -58,11 +42,10 @@ services:
           memory: 64M
 
   grafana:
-    image: stefanprodan/swarmprom-grafana:5.3.4
+    image: dhileepbalaji/grafana:latest
     networks:
       - default
-      - net
-      - traefik-public
+      - traefik
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -100,11 +83,10 @@ services:
         - traefik.webservice.frontend.entryPoints=https
 
   alertmanager:
-    image: stefanprodan/swarmprom-alertmanager:v0.14.0
+    image: dhileepbalaji/alertmanager:latest
     networks:
       - default
-      - net
-      - traefik-public
+      - traefik
     environment:
       - SLACK_URL=${SLACK_URL:-https://hooks.slack.com/services/TOKEN}
       - SLACK_CHANNEL=${SLACK_CHANNEL:-general}
@@ -142,8 +124,7 @@ services:
     image: cloudflare/unsee:v0.8.0
     networks:
       - default
-      - net
-      - traefik-public
+      - traefik
     environment:
       - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
     deploy:
@@ -163,9 +144,9 @@ services:
         - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
 
   node-exporter:
-    image: stefanprodan/swarmprom-node-exporter:v0.16.0
+    image: dhileepbalaji/node-exporter:latest
     networks:
-      - net
+      - default
     environment:
       - NODE_ID={{.Node.ID}}
     volumes:
@@ -188,11 +169,10 @@ services:
           memory: 64M
 
   prometheus:
-    image: stefanprodan/swarmprom-prometheus:v2.5.0
+    image: dhileepbalaji/prometheus:latest
     networks:
       - default
-      - net
-      - traefik-public
+      - traefik
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -204,6 +184,10 @@ services:
         target: /etc/prometheus/swarm_node.rules.yml
       - source: task_rules
         target: /etc/prometheus/swarm_task.rules.yml
+      - source: sites_rules
+        target: /etc/prometheus/sites.yml
+      - source: websites_rules
+        target: /etc/prometheus/websites.yml       
     deploy:
       mode: replicated
       replicas: 1

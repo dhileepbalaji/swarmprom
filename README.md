@@ -12,7 +12,7 @@ and [Unsee](https://github.com/cloudflare/unsee).
 Clone this repository and run the monitoring stack:
 
 ```bash
-$ git clone https://github.com/stefanprodan/swarmprom.git
+$ git clone https://github.com/dhileepbalaji/swarmprom.git
 $ cd swarmprom
 
 ADMIN_USER=admin \
@@ -25,7 +25,7 @@ docker stack deploy -c docker-compose.yml mon
 
 Prerequisites:
 
-* Docker CE 17.09.0-ce or Docker EE 17.06.2-ee-3
+* Minimum Docker CE 17.09.0-ce or Docker EE 17.06.2-ee-3
 * Swarm cluster with one manager and a worker node
 * Docker engine experimental enabled and metrics address set to `0.0.0.0:9323`
 
@@ -38,29 +38,25 @@ Services:
 * dockerd-exporter (Docker daemon metrics collector, requires Docker experimental metrics-addr to be enabled)
 * alertmanager (alerts dispatcher) `http://<swarm-ip>:9093`
 * unsee (alert manager dashboard) `http://<swarm-ip>:9094`
-* caddy (reverse proxy and basic auth provider for prometheus, alertmanager and unsee)
 
 
-## Alternative install with Traefik and HTTPS
 
-If you have a Docker Swarm cluster with a global Traefik set up as described in [DockerSwarm.rocks](https://dockerswarm.rocks), you can deploy Swarmprom integrated with that global Traefik proxy.
-
-This way, each Swarmprom service will have its own domain, and each of them will be served using HTTPS, with certificates generated (and renewed) automatically.
+## Install with Traefik and HTTPS
 
 ### Requisites
 
 These instructions assume you already have Traefik set up following that guide above, in short:
 
 * With automatic HTTPS certificate generation.
-* A Docker Swarm network `traefik-public`.
-* Filtering to only serve containers with a tag `traefik-public`.
+* A Docker Swarm network `traefik`.
+* Filtering to only serve containers with a tag `traefik-prod`.
 
 ### Instructions
 
 * Clone this repository and enter into the directory:
 
 ```bash
-$ git clone https://github.com/stefanprodan/swarmprom.git
+$ git clone https://github.com/dhileepbalaji/swarmprom.git
 $ cd swarmprom
 ```
 
@@ -112,10 +108,10 @@ and make sure that the following sub-domains point to your Docker Swarm cluster 
 
 **Note**: You can also use a subdomain, like `swarmprom.example.com`. Just make sure that the subdomains point to (at least one of) your cluster IPs. Or set up a wildcard subdomain (`*`).
 
-* Set and export an environment variable with the tag used by Traefik public to filter services (by default, it's `traefik-public`):
+* Set and export an environment variable with the tag used by Traefik public to filter services (by default, it's `traefik-prod`):
 
 ```bash
-export TRAEFIK_PUBLIC_TAG=traefik-public
+export TRAEFIK_PUBLIC_TAG=traefik-prod
 ```
 
 * If you are using Slack and want to integrate it, set the following environment variables:
@@ -132,7 +128,7 @@ export SLACK_USER=alertmanager
 
 
 ```bash
-docker stack deploy -c docker-compose.traefik.yml swarmprom
+docker stack deploy -c docker-compose.traefik.yml monitoring
 ```
 
 To test it, go to each URL:
@@ -505,52 +501,3 @@ Prometheus config using the `JOBS` environment variable:
       - JOBS=mongo-exporter:9216 kafka-exporter:9216 redis-exporter:9216
 ```
 
-## Monitoring production systems
-
-The swarmprom project is meant as a starting point in developing your own monitoring solution. Before running this
-in production you should consider building and publishing your own Prometheus, node exporter and alert manager
-images. Docker Swarm doesn't play well with locally built images, the first step would be to setup a secure Docker
-registry that your Swarm has access to and push the images there. Your CI system should assign version tags to each
-image. Don't rely on the latest tag for continuous deployments, Prometheus will soon reach v2 and the data store
-will not be backwards compatible with v1.x.
-
-Another thing you should consider is having redundancy for Prometheus and alert manager.
-You could run them as a service with two replicas pinned on different nodes, or even better,
-use a service like Weave Cloud Cortex to ship your metrics outside of your current setup.
-You can use Weave Cloud not only as a backup of your
-metrics database but you can also define alerts and use it as a data source for your Grafana dashboards.
-Having the alerting and monitoring system hosted on a different platform other than your production
-is good practice that will allow you to react quickly and efficiently when a major disaster strikes.
-
-Swarmprom comes with built-in [Weave Cloud](https://www.weave.works/product/cloud/) integration,
-what you need to do is run the weave-compose stack with your Weave service token:
-
-```bash
-TOKEN=<WEAVE-TOKEN> \
-ADMIN_USER=admin \
-ADMIN_PASSWORD=admin \
-docker stack deploy -c weave-compose.yml mon
-```
-
-This will deploy Weave Scope and Prometheus with Weave Cortex as remote write.
-The local retention is set to 24h so even if your internet connection drops you'll not lose data
-as Prometheus will retry pushing data to Weave Cloud when the connection is up again.
-
-You can define alerts and notifications routes in Weave Cloud in the same way you would do with alert manager.
-
-To use Grafana with Weave Cloud you have to reconfigure the Prometheus data source like this:
-
-* Name: Prometheus
-* Type: Prometheus
-* Url: https://cloud.weave.works/api/prom
-* Access: proxy
-* Basic auth: use your service token as password, the user value is ignored
-
-Weave Scope automatically generates a map of your application, enabling you to intuitively understand,
-monitor, and control your microservices based application.
-You can view metrics, tags and metadata of the running processes, containers and hosts.
-Scope offers remote access to the Swarm’s nods and containers, making it easy to diagnose issues in real-time.
-
-![Scope](https://raw.githubusercontent.com/stefanprodan/swarmprom/master/grafana/screens/weave-scope.png)
-
-![Scope Hosts](https://raw.githubusercontent.com/stefanprodan/swarmprom/master/grafana/screens/weave-scope-hosts-v2.png)

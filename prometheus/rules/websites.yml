@@ -1,0 +1,44 @@
+groups:
+    - name: websites
+      rules:
+      - alert: ProbeFailed
+        expr: probe_success == 0
+        for: 2m
+        labels:
+          severity: error
+        annotations:
+          identifier: '{{ $labels.instance }}'
+          downmessage: "Website is Down\n"
+          upmessage: "Website is Up and Running\n"
+      
+      - alert: HttpStatusCode
+        expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
+        for: 2m
+        labels:
+          severity: error
+        annotations:
+          identifier: '{{ $labels.instance }}'
+          downmessage: "Error => HTTP status code is {{ $value }} \n"
+          upmessage: "Ok => HTTP status code \n"
+      
+      - alert: SslCertificateWillExpireSoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 30
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          identifier: '{{ $labels.instance }}'
+          downmessage: "WARNING ==> SSL certificate expires in 30 days\n"
+          upmessage: "OK ==>SSL certificate expiry > 30 days\n"
+      
+      - alert: SslCertificateExpired
+        expr: probe_ssl_earliest_cert_expiry - time()  <= 0
+        for: 2m
+        labels:
+          severity: error
+        annotations:
+          identifier: '{{ $labels.instance }}'
+          downmessage: "ERROR ==> SSL certificate has expired\n"
+          upmessage: "OK ==>SSL certificate is valid \n"
+  
+  

@@ -1,0 +1,8 @@
+modules: 
+    http_2xx: 
+      http: 
+      prober: http
+    http_post_2xx: 
+      http: 
+        method: POST
+      prober: http
