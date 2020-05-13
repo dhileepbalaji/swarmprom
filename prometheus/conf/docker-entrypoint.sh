@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/sh -e
 
 cat /etc/prometheus/prometheus.yml > /tmp/prometheus.yml
 
