@@ -20,6 +20,8 @@ configs:
     file: ./prometheus/rules/websites.yml
   sites_rules:
     file: ./prometheus/rules/sites.yml
+  blackbox_config:
+    file: ./blackbox-exporter/conf/blackbox.yml
 
 services:
   cadvisor:
@@ -71,16 +73,10 @@ services:
         reservations:
           memory: 64M
       labels:
-        - traefik.frontend.rule=Host:grafana.${DOMAIN}
         - traefik.enable=true
-        - traefik.port=3000
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
-        - traefik.docker.network=traefik-public
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-prod}
+        - traefik.docker.network=traefik
+
 
   alertmanager:
     image: dhileepbalaji/alertmanager:latest
@@ -108,17 +104,10 @@ services:
         reservations:
           memory: 64M
       labels:
-        - traefik.frontend.rule=Host:alertmanager.${DOMAIN}
         - traefik.enable=true
-        - traefik.port=9093
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik}
         - traefik.docker.network=traefik-public
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+
 
   unsee:
     image: cloudflare/unsee:v0.8.0
@@ -131,17 +120,10 @@ services:
       mode: replicated
       replicas: 1
       labels:
-        - traefik.frontend.rule=Host:unsee.${DOMAIN}
         - traefik.enable=true
-        - traefik.port=8080
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-prod}
         - traefik.docker.network=traefik-public
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+
 
   node-exporter:
     image: dhileepbalaji/node-exporter:latest
@@ -167,7 +149,25 @@ services:
           memory: 128M
         reservations:
           memory: 64M
-
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    networks:
+      - default
+    command:
+      - '--config.file=/etc/blackbox_exporter/config.yml'
+    configs:
+      - source: blackbox_config
+        target: /etc/blackbox_exporter/config.yml
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 128M
+        reservations:
+          memory: 64M
   prometheus:
     image: dhileepbalaji/prometheus:latest
     networks:
@@ -200,14 +200,7 @@ services:
         reservations:
           memory: 128M
       labels:
-        - traefik.frontend.rule=Host:prometheus.${DOMAIN}
         - traefik.enable=true
-        - traefik.port=9090
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-public}
-        - traefik.docker.network=traefik-public
-        # Traefik service that listens to HTTP
-        - traefik.redirectorservice.frontend.entryPoints=http
-        - traefik.redirectorservice.frontend.redirect.entryPoint=https
-        # Traefik service that listens to HTTPS
-        - traefik.webservice.frontend.entryPoints=https
-        - traefik.frontend.auth.basic.users=${ADMIN_USER}:${HASHED_PASSWORD}
+        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-prod}
+        - traefik.docker.network=traefik
+
