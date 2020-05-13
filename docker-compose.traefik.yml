@@ -11,11 +11,7 @@ x-deploy: &deploy-replicated
       memory: 128M
     reservations:
       memory: 64M
-# Template for common deploy labels
-x-deploy-labels: &deploy-labels
-  - traefik.enable=true
-  - traefik.tags=traefik-prod 
-  - traefik.docker.network=traefik
+
 
 networks:
   default:
@@ -71,7 +67,9 @@ services:
     deploy:
       <<: *deploy-replicated
       labels:
-        <<: *deploy-labels
+        - traefik.enable=true
+        - traefik.tags=traefik-prod 
+        - traefik.docker.network=traefik
         - "traefik.http.routers.grafana.rule=Host(`grafana.example.com`)"
         #- traefik.http.routers.grafana.middlewares=oauth01
         - traefik.http.routers.grafana.entrypoints=prodhttps
@@ -98,7 +96,9 @@ services:
     deploy:
       <<: *deploy-replicated
       labels:
-        <<: *deploy-labels
+        - traefik.enable=true
+        - traefik.tags=traefik-prod 
+        - traefik.docker.network=traefik
         - "traefik.http.routers.alertmanager.rule=Host(`alertmanager.example.com`)"
         #- traefik.http.routers.alertmanager.middlewares=oauth01
         - traefik.http.routers.alertmanager.entrypoints=prodhttps
@@ -117,7 +117,9 @@ services:
     deploy:
       <<: *deploy-replicated
       labels:
-        <<: *deploy-labels
+        - traefik.enable=true
+        - traefik.tags=traefik-prod 
+        - traefik.docker.network=traefik
         - "traefik.http.routers.unsee.rule=Host(`unsee.example.com`)"
         #- traefik.http.routers.unsee.middlewares=oauth01
         - traefik.http.routers.unsee.entrypoints=prodhttps
@@ -184,7 +186,9 @@ services:
     deploy:
       <<: *deploy-replicated
       labels:
-        <<: *deploy-labels
+        - traefik.enable=true
+        - traefik.tags=traefik-prod 
+        - traefik.docker.network=traefik
         - "traefik.http.routers.prom.rule=Host(`prometheus.example.com`)"
         - traefik.http.routers.prom.entrypoints=prodhttps
         #- traefik.http.routers.prom.middlewares=oauth01
