@@ -49,7 +49,6 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     deploy:
-      <<: *deploy-replicated
       mode: global # overriding the value of mode from template
 
   grafana:
@@ -146,7 +145,6 @@ services:
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
       - '--no-collector.ipvs'
     deploy:
-      <<: *deploy-replicated
       mode: global # overriding the value of mode from template
 
 
