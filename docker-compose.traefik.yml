@@ -1,4 +1,21 @@
 version: "3.7"
+# Template for common deploy options
+x-deploy: &deploy-replicated
+  mode: replicated
+  replicas: 1
+  placement:
+    constraints:
+      - node.role == manager
+  resources:
+    limits:
+      memory: 128M
+    reservations:
+      memory: 64M
+# Template for common deploy labels
+x-deploy-labels: &deploy-labels
+  - traefik.enable=true
+  - traefik.tags=traefik-prod 
+  - traefik.docker.network=traefik
 
 networks:
   default:
@@ -36,12 +53,8 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     deploy:
-      mode: global
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
+      <<: *deploy-replicated
+      mode: global # overriding the value of mode from template
 
   grafana:
     image: dhileepbalaji/grafana:latest
@@ -53,29 +66,12 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false
       #- GF_SERVER_ROOT_URL=${GF_SERVER_ROOT_URL:-localhost}
-      #- GF_SMTP_ENABLED=${GF_SMTP_ENABLED:-false}
-      #- GF_SMTP_FROM_ADDRESS=${GF_SMTP_FROM_ADDRESS:-grafana@test.com}
-      #- GF_SMTP_FROM_NAME=${GF_SMTP_FROM_NAME:-Grafana}
-      #- GF_SMTP_HOST=${GF_SMTP_HOST:-smtp:25}
-      #- GF_SMTP_USER=${GF_SMTP_USER}
-      #- GF_SMTP_PASSWORD=${GF_SMTP_PASSWORD}
     volumes:
       - grafana:/var/lib/grafana
     deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
+      <<: *deploy-replicated
       labels:
-        - traefik.enable=true
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-prod}
-        - traefik.docker.network=traefik
+        <<: *deploy-labels
 
 
   alertmanager:
@@ -93,20 +89,9 @@ services:
     volumes:
       - alertmanager:/alertmanager
     deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
+      <<: *deploy-replicated
       labels:
-        - traefik.enable=true
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik}
-        - traefik.docker.network=traefik-public
+        <<: *deploy-labels
 
 
   unsee:
@@ -117,12 +102,9 @@ services:
     environment:
       - "ALERTMANAGER_URIS=default:http://alertmanager:9093"
     deploy:
-      mode: replicated
-      replicas: 1
+      <<: *deploy-replicated
       labels:
-        - traefik.enable=true
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-prod}
-        - traefik.docker.network=traefik-public
+        <<: *deploy-labels
 
 
   node-exporter:
@@ -143,12 +125,10 @@ services:
       - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
       - '--no-collector.ipvs'
     deploy:
-      mode: global
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
+      <<: *deploy-replicated
+      mode: global # overriding the value of mode from template
+
+
   blackbox-exporter:
     image: prom/blackbox-exporter:latest
     networks:
@@ -159,15 +139,9 @@ services:
       - source: blackbox_config
         target: /etc/blackbox_exporter/config.yml
     deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          memory: 128M
-        reservations:
-          memory: 64M
+      <<: *deploy-replicated
+
+
   prometheus:
     image: dhileepbalaji/prometheus:latest
     networks:
@@ -189,18 +163,7 @@ services:
       - source: websites_rules
         target: /etc/prometheus/websites.yml       
     deploy:
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == manager
-      resources:
-        limits:
-          memory: 2048M
-        reservations:
-          memory: 128M
+      <<: *deploy-replicated
       labels:
-        - traefik.enable=true
-        - traefik.tags=${TRAEFIK_PUBLIC_TAG:-traefik-prod}
-        - traefik.docker.network=traefik
+        <<: *deploy-labels
 
