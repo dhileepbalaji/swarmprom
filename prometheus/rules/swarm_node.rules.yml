@@ -1,5 +1,5 @@
 groups:
-- name: swarm_task.rules.yml
+- name: swarm_node.rules.yml
   rules:
     - alert: OutOfMemory
       expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10
@@ -7,6 +7,7 @@ groups:
       labels:
         severity: warning
       annotations:
+        identifier: '{{ $labels.instance }}'
         summary: "Out of memory (instance {{ $labels.instance }})"
         description: "Node memory is filling up (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     
@@ -16,6 +17,7 @@ groups:
       labels:
         severity: warning
       annotations:
+        identifier: '{{ $labels.instance }}'
         summary: "Out of disk space (instance {{ $labels.instance }})"
         description: "Disk is almost full (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     
@@ -25,6 +27,7 @@ groups:
       labels:
         severity: warning
       annotations:
+        identifier: '{{ $labels.instance }}'
         summary: "Disk will fill in 4 hours (instance {{ $labels.instance }})"
         description: "Disk will fill in 4 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     
@@ -34,6 +37,7 @@ groups:
       labels:
         severity: warning
       annotations:
+        identifier: '{{ $labels.instance }}'
         summary: "Out of inodes (instance {{ $labels.instance }})"
         description: "Disk is almost running out of available inodes (< 10% left)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     
@@ -43,6 +47,7 @@ groups:
       labels:
         severity: warning
       annotations:
+        identifier: '{{ $labels.instance }}'
         summary: "High CPU load (instance {{ $labels.instance }})"
         description: "CPU load is > 80%\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     
@@ -52,6 +57,7 @@ groups:
       labels:
         severity: warning
       annotations:
+        identifier: '{{ $labels.instance }}'
         summary: "Swap is filling up (instance {{ $labels.instance }})"
         description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
     
