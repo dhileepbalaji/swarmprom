@@ -85,11 +85,12 @@ services:
       - traefik
     environment:
       - SLACK_URL=${SLACK_URL:-https://hooks.slack.com/services/TOKEN}
-      - SLACK_CHANNEL=${SLACK_CHANNEL:-general}
       - SLACK_USER=${SLACK_USER:-alertmanager}
+      - EXTERNAL_URL=${EXTERNAL_URL:-https://alertmanager.example.com}
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
       - '--storage.path=/alertmanager'
+      - "--web.external-url=${EXTERNAL_URL}"
     volumes:
       - alertmanager:/alertmanager
     deploy:

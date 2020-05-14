@@ -7,9 +7,8 @@ groups:
         labels:
           severity: error
         annotations:
-          identifier: '{{ $labels.instance }}'
-          downmessage: "Website is Down\n"
-          upmessage: "Website is Up and Running\n"
+          description: "Site is Down {{ $labels.instance }} \n"
+          summary: "Site Down\n"
       
       - alert: HttpStatusCode
         expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
@@ -17,9 +16,8 @@ groups:
         labels:
           severity: error
         annotations:
-          identifier: '{{ $labels.instance }}'
-          downmessage: "Error => HTTP status code is {{ $value }} \n"
-          upmessage: "Ok => HTTP status code \n"
+          description: "HTTP status code Non-200X for {{ $labels.instance }} \n"
+          summary: "HTTP Non-200X response \n"
       
       - alert: SslCertificateWillExpireSoon
         expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 30
@@ -27,9 +25,8 @@ groups:
         labels:
           severity: warning
         annotations:
-          identifier: '{{ $labels.instance }}'
-          downmessage: "WARNING ==> SSL certificate expires in 30 days\n"
-          upmessage: "OK ==>SSL certificate expiry > 30 days\n"
+          description: "SSL certificate expires in 30 days for {{ $labels.instance }} \n"
+          summary: "SSL certificate expiry > 30 days\n"
       
       - alert: SslCertificateExpired
         expr: probe_ssl_earliest_cert_expiry - time()  <= 0
@@ -37,8 +34,7 @@ groups:
         labels:
           severity: error
         annotations:
-          identifier: '{{ $labels.instance }}'
-          downmessage: "ERROR ==> SSL certificate has expired\n"
-          upmessage: "OK ==>SSL certificate is valid \n"
+          description: "SSL certificate has expired for {{ $labels.instance }}\n"
+          summary: "SSL Certificate is Expired \n"
   
   
