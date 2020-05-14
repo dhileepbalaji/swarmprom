@@ -8,7 +8,7 @@ x-deploy: &deploy-replicated
       - node.role == manager
   resources:
     limits:
-      memory: 128M
+      memory: 1024M
     reservations:
       memory: 64M
 
@@ -30,7 +30,7 @@ configs:
   task_rules:
     file: ./prometheus/rules/swarm_task.rules.yml
   websites_rules:
-    file: ./prometheus/rules/websites.yml
+    file: ./prometheus/rules/websites_rules.yml
   sites_rules:
     file: ./prometheus/rules/sites.yml
   blackbox_config:
@@ -180,7 +180,7 @@ services:
       - source: sites_rules
         target: /etc/prometheus/sites.yml
       - source: websites_rules
-        target: /etc/prometheus/websites.yml       
+        target: /etc/prometheus/websites_rules.yml       
     deploy:
       <<: *deploy-replicated
       labels:
@@ -193,5 +193,5 @@ services:
         - traefik.http.routers.prom.service=prom
         - traefik.http.services.prom.loadbalancer.server.port=9090
         #- traefik.http.routers.prom.tls=true
-        #- traefik.http.routers.unsee.tls.certresolver=letsencrypt
+        #- traefik.http.routers.prom.tls.certresolver=letsencrypt
 
