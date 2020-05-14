@@ -69,17 +69,17 @@
 
 {{/* The text to display in the alert */}}
 {{ define "slack.text" -}}
-    {{- range .Alerts }}
-        {{- if .Annotations.summary }}
-            *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
-        {{- end }}
-        {{- if .Annotations.description }}
-            *Description:* {{ .Annotations.description }}
-        {{- end }}
-        *Details:*
-        {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
-        {{- end }}
-    {{- end }}
+{{- range .Alerts }}
+{{- if .Annotations.summary }}
+*Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+{{- end }}
+{{- if .Annotations.description }}
+*Description:* {{ .Annotations.description }}
+{{- end }}
+*Details:*
+  {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+  {{ end }}
+{{- end }}
 {{- end }}
 
 

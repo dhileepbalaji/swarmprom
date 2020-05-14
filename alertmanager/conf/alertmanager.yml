@@ -33,7 +33,7 @@ receivers:
     slack_configs:
       - send_resolved: true
         #api_url: <url>#
-        channel: '#{{- template "__slack.channel" . -}}'
+        channel: '#{{ template "__slack.channel" . }}'
         #username: <user>#
         color: '{{ template "slack.color" . }}'
         title: '{{ template "slack.title" . }}'

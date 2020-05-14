@@ -5,19 +5,19 @@ groups:
         expr: probe_success == 0
         for: 2m
         labels:
-          severity: error
+          severity: critical
         annotations:
-          description: "Site is Down {{ $labels.instance }} \n"
-          summary: "Site Down\n"
+          description: "Site is Down {{ $labels.instance }} "
+          summary: "Site Down"
       
       - alert: HttpStatusCode
         expr: probe_http_status_code <= 199 OR probe_http_status_code >= 400
         for: 2m
         labels:
-          severity: error
+          severity: critical
         annotations:
-          description: "HTTP status code Non-200X for {{ $labels.instance }} \n"
-          summary: "HTTP Non-200X response \n"
+          description: "HTTP status code Non-200X for {{ $labels.instance }} "
+          summary: "HTTP Non-200X response "
       
       - alert: SslCertificateWillExpireSoon
         expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 30
@@ -25,16 +25,16 @@ groups:
         labels:
           severity: warning
         annotations:
-          description: "SSL certificate expires in 30 days for {{ $labels.instance }} \n"
-          summary: "SSL certificate expiry > 30 days\n"
+          description: "SSL certificate expires in 30 days for {{ $labels.instance }} "
+          summary: "SSL certificate expiry > 30 days"
       
       - alert: SslCertificateExpired
         expr: probe_ssl_earliest_cert_expiry - time()  <= 0
         for: 2m
         labels:
-          severity: error
+          severity: critical
         annotations:
-          description: "SSL certificate has expired for {{ $labels.instance }}\n"
-          summary: "SSL Certificate is Expired \n"
+          description: "SSL certificate has expired for {{ $labels.instance }}"
+          summary: "SSL Certificate is Expired "
   
   
