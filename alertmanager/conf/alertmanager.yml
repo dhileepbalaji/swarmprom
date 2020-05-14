@@ -39,4 +39,4 @@ receivers:
         text: '{{ template "custom_slack_message" . }}'
 
 templates:
-- /alertmanager/notifications.tmpl
+- /etc/alertmanager/notifications.tmpl
