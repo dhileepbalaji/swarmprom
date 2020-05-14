@@ -60,4 +60,13 @@ groups:
         identifier: '{{ $labels.instance }}'
         summary: "Swap is filling up (instance {{ $labels.instance }})"
         description: "Swap is filling up (>80%)\n  VALUE = {{ $value }}\n  LABELS: {{ $labels }}"
+
+    - alert: HostOomKillDetected
+      expr: increase(node_vmstat_oom_kill[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Host OOM kill detected (instance {{ $labels.instance }})"
+        description: "OOM kill detected  VALUE = {{ $value }}  LABELS: {{ $labels }}"
     
