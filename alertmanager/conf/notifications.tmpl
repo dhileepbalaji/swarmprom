@@ -102,7 +102,7 @@ to the correct channel */ -}}
 {{- /* Select the channel based on the slack_channel label. We only expect to get
 into this template function if the code_owners label is present on an alert.
 This is to defend against us accidentally breaking the routing logic. */ -}}
-{{ define "slack.channel" -}}
+{{ define "__slack.channel" -}}
     {{- if .CommonLabels.slack_channel }}
         {{ template "__get_channel_for_slack" .CommonLabels.slack_channel }}
     {{- else -}}
