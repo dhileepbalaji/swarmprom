@@ -32,7 +32,7 @@ configs:
   websites_rules:
     file: ./prometheus/rules/websites_rules.yml
   sites_rules:
-    file: ./prometheus/rules/sites.yml
+    file: ./prometheus/blackbox/targets.yml
   traefik_rules:
     file: ./prometheus/rules/traefik_rules.yml
   blackbox_config:
@@ -181,7 +181,7 @@ services:
       - source: task_rules
         target: /etc/prometheus/swarm_task.rules.yml
       - source: sites_rules
-        target: /etc/prometheus/sites.yml
+        target: /etc/prometheus/blackbox/targets.yml
       - source: websites_rules
         target: /etc/prometheus/websites_rules.yml      
       - source: traefik_rules

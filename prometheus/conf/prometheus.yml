@@ -37,7 +37,7 @@ scrape_configs:
     scrape_interval: 120s
     file_sd_configs: 
       - files: 
-          - "sites.yml"
+          - "blackbox/targets.yml"
 
   - job_name: 'cadvisor'
     dns_sd_configs:
