@@ -2,6 +2,7 @@
     "annotations": {
       "list": [
         {
+          "$$hashKey": "object:133",
           "builtIn": 1,
           "datasource": "-- Grafana --",
           "enable": true,
@@ -12,11 +13,12 @@
         }
       ]
     },
+    "description": "Dashboard for Traefik2/Prometheus, based upon the one by ichasco.  Updated for Traefik2 metric names.",
     "editable": true,
     "gnetId": 10906,
     "graphTooltip": 0,
-    "id": null,
-    "iteration": 1569328089102,
+    "id": 4,
+    "iteration": 1589521437377,
     "links": [
       {
         "icon": "external link",
@@ -46,7 +48,7 @@
           "thresholdMarkers": true
         },
         "gridPos": {
-          "h": 6,
+          "h": 5,
           "w": 3,
           "x": 0,
           "y": 0
@@ -68,7 +70,6 @@
         "maxDataPoints": 100,
         "nullPointMode": "connected",
         "nullText": null,
-        "options": {},
         "postfix": "",
         "postfixFontSize": "50%",
         "prefix": "",
@@ -128,8 +129,8 @@
           "thresholdMarkers": true
         },
         "gridPos": {
-          "h": 6,
-          "w": 3,
+          "h": 5,
+          "w": 2,
           "x": 3,
           "y": 0
         },
@@ -150,7 +151,6 @@
         "maxDataPoints": 100,
         "nullPointMode": "connected",
         "nullText": null,
-        "options": {},
         "postfix": "",
         "postfixFontSize": "50%",
         "prefix": "",
@@ -194,6 +194,94 @@
         "valueName": "max"
       },
       {
+        "cacheTimeout": null,
+        "colorBackground": false,
+        "colorValue": true,
+        "colors": [
+          "rgba(50, 172, 45, 0.97)",
+          "rgba(26, 206, 22, 0.89)",
+          "rgba(245, 54, 54, 0.9)"
+        ],
+        "datasource": null,
+        "decimals": 0,
+        "format": "none",
+        "gauge": {
+          "maxValue": 100,
+          "minValue": 0,
+          "show": false,
+          "thresholdLabels": false,
+          "thresholdMarkers": true
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 2,
+          "x": 5,
+          "y": 0
+        },
+        "id": 31,
+        "interval": null,
+        "links": [],
+        "mappingType": 1,
+        "mappingTypes": [
+          {
+            "$$hashKey": "object:214",
+            "name": "value to text",
+            "value": 1
+          },
+          {
+            "$$hashKey": "object:215",
+            "name": "range to text",
+            "value": 2
+          }
+        ],
+        "maxDataPoints": 100,
+        "nullPointMode": "connected",
+        "nullText": null,
+        "postfix": "",
+        "postfixFontSize": "50%",
+        "prefix": "",
+        "prefixFontSize": "200%",
+        "rangeMaps": [
+          {
+            "from": "null",
+            "text": "N/A",
+            "to": "null"
+          }
+        ],
+        "sparkline": {
+          "fillColor": "rgba(31, 118, 189, 0.18)",
+          "full": false,
+          "lineColor": "rgb(31, 120, 193)",
+          "show": false
+        },
+        "tableColumn": "",
+        "targets": [
+          {
+            "expr": "sum(increase(traefik_service_requests_total{code=\"500\",protocol=~\"$protocol\"}[$interval]))",
+            "format": "time_series",
+            "interval": "",
+            "intervalFactor": 2,
+            "legendFormat": "",
+            "metric": "traefik_requests_total",
+            "refId": "A",
+            "step": 60
+          }
+        ],
+        "thresholds": "0,1",
+        "title": "500 Error Count last $interval",
+        "type": "singlestat",
+        "valueFontSize": "200%",
+        "valueMaps": [
+          {
+            "$$hashKey": "object:217",
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "max"
+      },
+      {
         "aliasColors": {},
         "breakPoint": "50%",
         "cacheTimeout": null,
@@ -205,9 +293,9 @@
         "fontSize": "80%",
         "format": "short",
         "gridPos": {
-          "h": 6,
-          "w": 7,
-          "x": 6,
+          "h": 5,
+          "w": 5,
+          "x": 7,
           "y": 0
         },
         "id": 18,
@@ -223,7 +311,6 @@
         "links": [],
         "maxDataPoints": 3,
         "nullPointMode": "connected",
-        "options": {},
         "pieType": "pie",
         "strokeWidth": 1,
         "targets": [
@@ -258,9 +345,9 @@
           "thresholdMarkers": true
         },
         "gridPos": {
-          "h": 6,
-          "w": 4,
-          "x": 13,
+          "h": 5,
+          "w": 3,
+          "x": 12,
           "y": 0
         },
         "id": 20,
@@ -280,7 +367,6 @@
         "maxDataPoints": 100,
         "nullPointMode": "connected",
         "nullText": null,
-        "options": {},
         "postfix": "",
         "postfixFontSize": "50%",
         "prefix": "",
@@ -303,7 +389,9 @@
           {
             "expr": "sum(traefik_entrypoint_request_duration_seconds_sum) / sum(traefik_entrypoint_requests_total) * 1000",
             "format": "time_series",
+            "interval": "",
             "intervalFactor": 2,
+            "legendFormat": "",
             "refId": "A"
           }
         ],
@@ -329,11 +417,12 @@
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 6,
-          "w": 7,
-          "x": 17,
+          "h": 5,
+          "w": 9,
+          "x": 15,
           "y": 0
         },
+        "hiddenSeries": false,
         "id": 14,
         "legend": {
           "avg": false,
@@ -363,6 +452,7 @@
           {
             "expr": "sum(traefik_service_request_duration_seconds_sum{protocol=~\"$protocol\"}) / sum(traefik_entrypoint_requests_total{protocol=~\"$protocol\"}) * 1000",
             "format": "time_series",
+            "interval": "",
             "intervalFactor": 2,
             "legendFormat": "Average response time (ms)",
             "refId": "A",
@@ -389,6 +479,7 @@
         },
         "yaxes": [
           {
+            "$$hashKey": "object:480",
             "format": "ms",
             "label": null,
             "logBase": 10,
@@ -397,6 +488,7 @@
             "show": true
           },
           {
+            "$$hashKey": "object:481",
             "format": "short",
             "label": null,
             "logBase": 1,
@@ -423,8 +515,9 @@
           "h": 6,
           "w": 12,
           "x": 0,
-          "y": 6
+          "y": 5
         },
+        "hiddenSeries": false,
         "id": 10,
         "legend": {
           "alignAsTable": true,
@@ -454,11 +547,11 @@
         "steppedLine": false,
         "targets": [
           {
-            "expr": "sum(increase(traefik_service_requests_total{code=\"404\",method=\"GET\",protocol=~\"$protocol\"}[$interval])) by (service)",
+            "expr": "sum(increase(traefik_service_requests_total{code=~\"40.*|50.*\",method=~\"GET|POST\",protocol=~\"$protocol\"}[$interval])) by (service,code)",
             "format": "time_series",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{service}} ",
+            "legendFormat": "{{service}}  {{code}}",
             "refId": "A",
             "step": 240
           }
@@ -517,8 +610,9 @@
           "h": 6,
           "w": 12,
           "x": 12,
-          "y": 6
+          "y": 5
         },
+        "hiddenSeries": false,
         "hideTimeOverride": false,
         "id": 4,
         "legend": {
@@ -605,200 +699,15 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": null,
-        "fill": 1,
-        "fillGradient": 0,
-        "gridPos": {
-          "h": 6,
-          "w": 10,
-          "x": 0,
-          "y": 12
-        },
-        "id": 8,
-        "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
-          "show": true,
-          "total": false,
-          "values": false
-        },
-        "lines": true,
-        "linewidth": 1,
-        "links": [],
-        "nullPointMode": "null as zero",
-        "options": {
-          "dataLinks": []
-        },
-        "percentage": false,
-        "pointradius": 5,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": true,
-        "steppedLine": false,
-        "targets": [
-          {
-            "expr": "process_open_fds{job=~\"$job\"}",
-            "format": "time_series",
-            "interval": "",
-            "intervalFactor": 2,
-            "legendFormat": "{{ instance }}",
-            "refId": "A",
-            "step": 240
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Used sockets",
-        "tooltip": {
-          "shared": true,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          },
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
-      },
-      {
-        "aliasColors": {},
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": null,
-        "decimals": 0,
-        "fill": 1,
-        "fillGradient": 0,
-        "gridPos": {
-          "h": 6,
-          "w": 14,
-          "x": 10,
-          "y": 12
-        },
-        "id": 24,
-        "legend": {
-          "alignAsTable": true,
-          "avg": true,
-          "current": true,
-          "max": false,
-          "min": false,
-          "rightSide": true,
-          "show": true,
-          "total": true,
-          "values": true
-        },
-        "lines": true,
-        "linewidth": 1,
-        "links": [],
-        "nullPointMode": "null",
-        "options": {
-          "dataLinks": []
-        },
-        "percentage": false,
-        "pointradius": 5,
-        "points": false,
-        "renderer": "flot",
-        "seriesOverrides": [],
-        "spaceLength": 10,
-        "stack": false,
-        "steppedLine": false,
-        "targets": [
-          {
-            "expr": "sum(rate(traefik_service_requests_total{protocol=~\"http|https\",code=\"200\"}[$interval])) by (service)",
-            "format": "time_series",
-            "interval": "",
-            "intervalFactor": 2,
-            "legendFormat": "{{service}} {{method}} {{code}}",
-            "refId": "A",
-            "step": 240
-          }
-        ],
-        "thresholds": [],
-        "timeFrom": null,
-        "timeRegions": [],
-        "timeShift": null,
-        "title": "Access to backends",
-        "tooltip": {
-          "shared": true,
-          "sort": 0,
-          "value_type": "individual"
-        },
-        "type": "graph",
-        "xaxis": {
-          "buckets": null,
-          "mode": "time",
-          "name": null,
-          "show": true,
-          "values": []
-        },
-        "yaxes": [
-          {
-            "decimals": 0,
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          },
-          {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": false
-          }
-        ],
-        "yaxis": {
-          "align": false,
-          "alignLevel": null
-        }
-      },
-      {
-        "aliasColors": {},
-        "bars": false,
-        "dashLength": 10,
-        "dashes": false,
-        "datasource": null,
         "fill": 7,
         "fillGradient": 0,
         "gridPos": {
           "h": 7,
           "w": 12,
           "x": 0,
-          "y": 18
+          "y": 11
         },
+        "hiddenSeries": false,
         "id": 30,
         "legend": {
           "alignAsTable": true,
@@ -890,8 +799,9 @@
           "h": 7,
           "w": 12,
           "x": 12,
-          "y": 18
+          "y": 11
         },
+        "hiddenSeries": false,
         "id": 28,
         "legend": {
           "alignAsTable": true,
@@ -981,11 +891,108 @@
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
+          "h": 6,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "hiddenSeries": false,
+        "id": 24,
+        "legend": {
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": false,
+          "min": false,
+          "rightSide": true,
+          "show": true,
+          "total": true,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null",
+        "options": {
+          "dataLinks": []
+        },
+        "percentage": false,
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "sum(rate(traefik_service_requests_total{protocol=~\"http|https\",code=~\"200\"}[$interval])) by (service,code,method)",
+            "format": "time_series",
+            "interval": "",
+            "intervalFactor": 2,
+            "legendFormat": "{{service}} {{method}} {{code}}",
+            "refId": "A",
+            "step": 240
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Access to backends",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "decimals": 0,
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": false
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": null,
+        "decimals": 0,
+        "fill": 1,
+        "fillGradient": 0,
+        "gridPos": {
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 25
+          "y": 24
         },
+        "hiddenSeries": false,
         "id": 12,
         "legend": {
           "alignAsTable": true,
@@ -1069,10 +1076,102 @@
           "align": false,
           "alignLevel": null
         }
+      },
+      {
+        "aliasColors": {},
+        "bars": false,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": null,
+        "fill": 1,
+        "fillGradient": 0,
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 31
+        },
+        "hiddenSeries": false,
+        "id": 8,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": true,
+        "linewidth": 1,
+        "links": [],
+        "nullPointMode": "null as zero",
+        "options": {
+          "dataLinks": []
+        },
+        "percentage": false,
+        "pointradius": 5,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "expr": "process_open_fds{job=~\"$job\"}",
+            "format": "time_series",
+            "interval": "",
+            "intervalFactor": 2,
+            "legendFormat": "{{ instance }}",
+            "refId": "A",
+            "step": 240
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Used sockets",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
       }
     ],
     "refresh": "10s",
-    "schemaVersion": 19,
+    "schemaVersion": 22,
     "style": "dark",
     "tags": [
       "traefik",
@@ -1085,11 +1184,16 @@
       "list": [
         {
           "allValue": null,
-          "current": {},
+          "current": {
+            "tags": [],
+            "text": "traefik-exporter",
+            "value": "traefik-exporter"
+          },
           "datasource": "Prometheus",
           "definition": "",
           "hide": 0,
           "includeAll": false,
+          "index": -1,
           "label": "Job:",
           "multi": false,
           "name": "job",
@@ -1107,11 +1211,16 @@
         },
         {
           "allValue": "traefik",
-          "current": {},
+          "current": {
+            "tags": [],
+            "text": "10.0.2.45",
+            "value": "10.0.2.45"
+          },
           "datasource": null,
           "definition": "",
           "hide": 0,
           "includeAll": false,
+          "index": -1,
           "label": "Node:",
           "multi": false,
           "name": "node",
@@ -1129,11 +1238,19 @@
         },
         {
           "allValue": null,
-          "current": {},
+          "current": {
+            "selected": false,
+            "tags": [],
+            "text": "http",
+            "value": [
+              "http"
+            ]
+          },
           "datasource": null,
           "definition": "label_values(traefik_service_requests_total, protocol)",
           "hide": 0,
           "includeAll": true,
+          "index": -1,
           "label": "Service:",
           "multi": true,
           "name": "protocol",
@@ -1154,6 +1271,7 @@
           "auto_count": 30,
           "auto_min": "10s",
           "current": {
+            "selected": false,
             "text": "30m",
             "value": "30m"
           },
@@ -1256,6 +1374,8 @@
     "timezone": "",
     "title": "Traefik2",
     "uid": "3ipsWfViz",
-    "version": 13,
-    "description": "Dashboard for Traefik2/Prometheus, based upon the one by ichasco.  Updated for Traefik2 metric names."
+    "variables": {
+      "list": []
+    },
+    "version": 3
   }
